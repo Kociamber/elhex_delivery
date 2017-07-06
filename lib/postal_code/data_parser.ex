@@ -2,9 +2,9 @@ defmodule ElhexDelivery.PostalCode.DataParser do
 	@postal_code_filepath "data/codes.txt"
 
 	def parse_data do
-	  [_header | data_rows ] = 
-      File.read!(@postal_code_filepath) 
-      |> String.split("\n")
+		[_header | data_rows ] = 
+			File.read!(@postal_code_filepath) 
+			|> String.split("\n")
 
   	data_rows
   	|> Enum.map(fn(row) -> String.split(row, "\t") end)
@@ -21,11 +21,12 @@ defmodule ElhexDelivery.PostalCode.DataParser do
 
 	def row_mapper(row) do
 		[postal_code, _, _, _, _, latitude, longitude] = row 
-  	[postal_code, latitude, longitude]
+	  [postal_code, latitude, longitude]
 	end
 
 	def transform_to_tuples(row) do
 		[postal_code, latitude, longitude] = row
+		
 		latitude =
 			latitude 
 			|> String.trim
