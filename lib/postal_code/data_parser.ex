@@ -9,6 +9,7 @@ defmodule ElhexDelivery.PostalCode.DataParser do
   	data_rows
   	|> Enum.map(fn(row) -> String.split(row, "\t") end)
   	|> Enum.filter_map(&row_filter(&1), &row_mapper(&1))
+  	|> Enum.map(&transform_to_tuples(&1))
 	end
 
 	def row_filter(row) do
@@ -21,5 +22,20 @@ defmodule ElhexDelivery.PostalCode.DataParser do
 	def row_mapper(row) do
 		[postal_code, _, _, _, _, latitude, longitude] = row 
   	[postal_code, latitude, longitude]
+	end
+
+	def transform_to_tuples(row) do
+		[postal_code, latitude, longitude] = row
+		latitude =
+			latitude 
+			|> String.trim
+			|> String.to_float
+
+		longitude =
+			longitude 
+			|> String.trim
+			|> String.to_float
+
+		{postal_code, {latitude, longitude}}
 	end
 end
