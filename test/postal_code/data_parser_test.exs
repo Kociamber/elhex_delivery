@@ -5,8 +5,10 @@ defmodule ElhexDelivery.PostalCode.DataParserTest do
 
 	# Just check whether postal code file is not empty
 	test "parse stuff" do
-		data_rows = DataParser.parse_data
-		first_row = Enum.at(data_rows, 0)
-		IO.inspect(first_row)
+		geo_data = DataParser.parse_data
+		{latitude, longitude} = Map.get(geo_data, "00601")
+		
+		assert is_float(latitude)
+		assert is_float(longitude)
 	end
 end

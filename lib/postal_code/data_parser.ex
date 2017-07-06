@@ -7,24 +7,28 @@ defmodule ElhexDelivery.PostalCode.DataParser do
       |> String.split("\n")
 
     data_rows
-    |> Enum.map(fn(row) -> String.split(row, "\t") end)
-    |> Enum.filter_map(&row_filter(&1), &row_mapper(&1))
-    |> Enum.map(&transform_to_tuples(&1))
+    |> Stream.map(fn(row) -> String.split(row, "\t") end)
+    |> Stream.filter_map(&row_filter(&1), &row_mapper(&1))
+    |> Stream.map(&transform_to_tuples(&1))
+    |> Enum.into(%{})
   end
 
-  def row_filter(row) do
+  # Ensure we are procesing only non-empty rows in a correct format.
+  defp row_filter(row) do
     case row do
       [_postal_code, _, _, _, _, _latitude, _longitude] -> true
       _ -> false
     end
   end
 
-  def row_mapper(row) do
+  # Re-format row lists.
+  defp row_mapper(row) do
     [postal_code, _, _, _, _, latitude, longitude] = row 
     [postal_code, latitude, longitude]
   end
 
-  def transform_to_tuples(row) do
+  # Re-format row lists to tuples before converting them to maps. 
+  defp transform_to_tuples(row) do
     [postal_code, latitude, longitude] = row
     
     latitude =
