@@ -4,8 +4,6 @@ defmodule ElhexDelivery.PostalCode.DataStoreTest do
   doctest ElhexDelivery
 
   test "get geolocation" do
-    DataStore.start_link
-
     {latitude, longitude} = DataStore.get_geolocation("00601")
 
     assert is_float(latitude)
