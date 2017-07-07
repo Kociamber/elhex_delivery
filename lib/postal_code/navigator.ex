@@ -1,12 +1,24 @@
 defmodule ElhexDelivery.PostalCode.Navigator do
   alias ElhexDelivery.PostalCode.DataStore
   alias :math, as: Math
+  use GenServer
 
   @radius_km 6371
   # @radius_mi 3959
 
+  def start_link do
+    GenServer.start_link(__MODULE__, [], name: :postal_code_navigator)
+  end
+
   def get_distance(from, to) do
-    do_get_distance(from, to)
+    GenServer.call(:postal_code_navigator, {:get_distance, from, to})
+  end
+
+  # Server API (Callbacks)
+
+  def handle_call({:get_distance, from, to}, _from, state) do
+    distance = do_get_distance(from, to)
+    {:reply, distance, state}
   end
 
   defp do_get_distance(from, to) do
@@ -16,16 +28,16 @@ defmodule ElhexDelivery.PostalCode.Navigator do
     calculate_distance({lat1, long1}, {lat2, long2})
   end
 
-  # If postal copde is string, get geo location.
-  defp get_geolocation(postal_code) when is_binary(postal_code) do
-    DataStore.get_geolocation(postal_code)
-  end
-
   # Ensure that postal code is string and get geo location.
   defp get_geolocation(postal_code) when is_integer(postal_code) do
     postal_code
     |> Integer.to_string
     |> get_geolocation
+  end
+
+  # If postal copde is string, get geo location.
+  defp get_geolocation(postal_code) when is_binary(postal_code) do
+    DataStore.get_geolocation(postal_code)
   end
 
   # Raise error in case of weird format. 
