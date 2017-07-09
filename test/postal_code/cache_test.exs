@@ -6,13 +6,18 @@ defmodule ElhexDelivery.PostalCode.CacheTest do
   test "get and set distance" do
     p1 = "12345"
     p2 = "98765"
+    p3 = "121212"
+    p4 = 454545
 
-    distance = 250.250
+    distance1 = 250.25
+    distance2 = 220.20
 
-    Cache.set_distance(p1, p2, distance)
-    retrieved_distance = Cache.get_distance(p1, p2)
+    Cache.set_distance(p1, p2, distance1)
+    Cache.set_distance(p3, p4, distance2)
+    retrieved_distance1 = Cache.get_distance(p1, p2)
+    retrieved_distance2 = Cache.get_distance(p3, p4)
 
-    IO.inspect(Cache.set_distance(p1, p2, distance))
-    assert distance == retrieved_distance
+    assert distance1 == retrieved_distance1
+    assert distance2 == retrieved_distance2
   end
 end
