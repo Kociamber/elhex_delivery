@@ -10,7 +10,7 @@ defmodule ElhexDelivery.PostalCode.NavigatorTest do
     end
 
     test "postal codes are integers" do
-      distance = Navigator.get_distance(00601, 94062)
+      distance = Navigator.get_distance(10112, 94062)
       assert is_float(distance)
     end
 
@@ -23,7 +23,7 @@ defmodule ElhexDelivery.PostalCode.NavigatorTest do
       navigator_pid = Process.whereis(:postal_code_navigator)
       reference = Process.monitor(navigator_pid)
       catch_exit do
-        Navigator.get_distance("94062", 94104.9876)
+        Navigator.get_distance("94062", 487536.3987483472)
       end
       assert_received({:DOWN, ^reference, :process, ^navigator_pid, {%ArgumentError{}, _}})
     end
@@ -36,7 +36,7 @@ defmodule ElhexDelivery.PostalCode.NavigatorTest do
       # Driving distance ~ 40 miles
       distance = Navigator.get_distance(94062, 94104)
       # IO.puts "RWC -> SF: #{distance}"
-      assert distance == 26.75
+      assert distance == 43.04
     end
     test "distance_between_sf_and_nyc" do
       # San Francisco, CA 94104
@@ -44,7 +44,7 @@ defmodule ElhexDelivery.PostalCode.NavigatorTest do
       # Driving distance ~ 3100 miles
       distance = Navigator.get_distance(94104, 10112)
       # IO.puts "SF -> NY: #{distance}"
-      assert distance == 2565.28
+      assert distance == 4128.16
     end
     test "distance_between_mnpls_and_austin" do
       # Minneapolis, MN 55401
@@ -52,7 +52,7 @@ defmodule ElhexDelivery.PostalCode.NavigatorTest do
       # Driving distance ~ 1100 miles
       distance = Navigator.get_distance(55401, 78703)
       # IO.puts "MNPLS -> Austin: #{distance}"
-      assert distance == 1044.08
+      assert distance == 1680.18
     end
   end
 end
