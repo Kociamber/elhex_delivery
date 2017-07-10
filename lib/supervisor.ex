@@ -8,7 +8,6 @@ defmodule ElhexDelivery.Supervisor do
   def init(_) do
     children = [
       supervisor(ElhexDelivery.PostalCode.Supervisor, [])
-      #worker(ElhexDelivery.PostalCode.DataStore, [])
     ]
 
     supervise(children, strategy: :one_for_one)

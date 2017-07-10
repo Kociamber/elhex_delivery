@@ -1,5 +1,5 @@
 defmodule ElhexDelivery.PostalCode.Navigator do
-  alias ElhexDelivery.PostalCode.DataStore
+  alias ElhexDelivery.PostalCode.{DataStore, Cache}
   alias :math, as: Math
   use GenServer
 
@@ -22,31 +22,41 @@ defmodule ElhexDelivery.PostalCode.Navigator do
   end
 
   defp do_get_distance(from, to) do
-    {lat1, long1} = get_geolocation(from)
-    {lat2, long2} = get_geolocation(to)
+    from =  format_postal_code(from)
+    to = format_postal_code(to)
 
-    calculate_distance({lat1, long1}, {lat2, long2})
+    case Cache.get_distance(from, to) do
+      nil ->
+        {lat1, long1} = get_geolocation(from)
+        {lat2, long2} = get_geolocation(to)
+
+        distance = calculate_distance({lat1, long1}, {lat2, long2})
+        Cache.set_distance(from, to, distance)
+        distance
+      distance -> distance
+    end
+
+
   end
 
-  # Ensure that postal code is string and get geo location.
-  defp get_geolocation(postal_code) when is_integer(postal_code) do
-    postal_code
-    |> Integer.to_string
-    |> get_geolocation
-  end
-
-  # If postal copde is string, get geo location.
-  defp get_geolocation(postal_code) when is_binary(postal_code) do
+  defp get_geolocation(postal_code) do
     DataStore.get_geolocation(postal_code)
   end
 
+  # Ensure that postal code is string and get geo location.
+  defp format_postal_code(postal_code) when is_binary(postal_code), do: postal_code
+  defp format_postal_code(postal_code) when is_integer(postal_code) do
+    postal_code
+    |> Integer.to_string
+    |> format_postal_code
+  end
   # Raise error in case of weird format. 
-  defp get_geolocation(postal_code) do
+  defp format_postal_code(postal_code) do
     error = "Unexpected `postal_code`, received: #{inspect(postal_code)}"
     raise ArgumentError, error
   end
 
-   defp calculate_distance({lat1, long1}, {lat2, long2}) do
+  defp calculate_distance({lat1, long1}, {lat2, long2}) do
     lat_diff = degrees_to_radians(lat2 - lat1)
     long_diff = degrees_to_radians(long2 - long1)
 
