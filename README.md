@@ -1,6 +1,12 @@
 # ElhexDelivery
 
-**TODO: Add description**
+**Elixir's GenServer playground**
+This simple app calcualtes geolocation basing on provided postal codes. 
+It's using few nice freatures like:
+1. GenServer
+2. Supervision 
+3. Caching 
+4. External file loading and parsing
 
 ## Installation
 
@@ -12,8 +18,4 @@ def deps do
   [{:elhex_delivery, "~> 0.1.0"}]
 end
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/elhex_delivery](https://hexdocs.pm/elhex_delivery).
 
