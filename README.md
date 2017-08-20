@@ -1,6 +1,7 @@
 # ElhexDelivery
 
 **Elixir's GenServer playground**
+
 This simple app calcualtes geolocation basing on provided postal codes. 
 It's using few nice freatures like:
 1. GenServer
